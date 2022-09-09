@@ -43,8 +43,6 @@ This version of UFO is not yet compliant with the docs, and probably also diverg
 ## Development
 
 * Written using Emacs. I won't get into a holy war over editors. The best editor is the one you prefer to use.
-* No 3rd party dependencies. I wrote the lexer, parser, and unit test library.
-  * I'll eventually add 3rd party libraries when I get to stuff like JSON and YAML. Now way I'm writing a YAML parser. (Update: but I did write a JSON parser.)
 * Compiled using G++.
 * Memory tested using valgrind.
 * Running in Ubuntu 20 in VirtualBox on a Mac Mini.
