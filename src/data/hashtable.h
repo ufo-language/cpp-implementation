@@ -10,7 +10,6 @@ namespace ufo {
     class Evaluator;
     
     class D_HashTable : public Any {
-
     public:
         D_HashTable() {}
 

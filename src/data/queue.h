@@ -11,7 +11,6 @@ namespace ufo {
     class Evaluator;
     
     class D_Queue : public Any {
-
     public:
         D_Queue()
             : _elems{EMPTY_LIST}, _last{EMPTY_LIST} {

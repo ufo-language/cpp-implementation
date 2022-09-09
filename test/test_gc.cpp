@@ -39,10 +39,17 @@ namespace ufo {
         TestClass* testObj1 = new TestClass();
         TestClass* testObj2 = new TestClass();
 
+        REQUIRE(THE_GC.isRegistered(testObj1));
+        REQUIRE(THE_GC.isRegistered(testObj2));
+        REQUIRE(!THE_GC.isRoot(testObj1));
+        REQUIRE(!THE_GC.isRoot(testObj2));
         REQUIRE(!testObj1->isMarked());
         REQUIRE(!testObj2->isMarked());
 
         THE_GC.addRoot(testObj1);
+
+        REQUIRE(THE_GC.isRoot(testObj1));
+        REQUIRE(!THE_GC.isRoot(testObj2));
 
         SECTION("mark sweep dispose") {
             THE_GC.mark();

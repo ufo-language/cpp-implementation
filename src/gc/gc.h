@@ -18,6 +18,8 @@ namespace ufo {
         // should be protected, but they're public for testing
         void deleteAll();
         void dispose(std::queue<Any*>& deadObjects);
+        bool isRegistered(Any* object);
+        bool isRoot(Any* object);
         void mark();
         void sweep(std::queue<Any*>& deadObjects);
 

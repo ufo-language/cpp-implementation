@@ -13,10 +13,9 @@ namespace ufo {
     class Evaluator;
     
     class D_List : public Any {
-
     public:
         D_List(Any* first, Any* rest)
-           : _first{first}, _rest{rest} {}
+           : Any{}, _first{first}, _rest{rest} {}
 
         TypeId getTypeId() override { return T_List; }
 
@@ -60,6 +59,7 @@ namespace ufo {
 
     };
 
-    static D_List* EMPTY_LIST = new D_EmptyList();
+    static D_EmptyList _EMPTY_LIST;
+    static D_List* EMPTY_LIST = &_EMPTY_LIST;
 
 }

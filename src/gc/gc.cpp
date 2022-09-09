@@ -34,9 +34,30 @@ namespace ufo {
     void GC::deleteAll() {
         while (_allObjects) {
             Any* next = _allObjects->getNext();
+            std::cout << "GC::deleteAll deleting " << (void*)_allObjects << " " << _allObjects << "\n";
             delete _allObjects;
             _allObjects = next;
         }
+    }
+
+    bool GC::isRegistered(Any* object) {
+        Any* allObjects = _allObjects;
+        while (allObjects) {
+            if (object == allObjects) {
+                return true;
+            }
+            allObjects = allObjects->getNext();
+        }
+        return false;
+    }
+
+    bool GC::isRoot(Any* object) {
+        for (Any* rootObject : _rootObjects) {
+            if (object == rootObject) {
+                return true;
+            }
+        }
+        return false;
     }
 
     void GC::mark() {
