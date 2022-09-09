@@ -59,7 +59,7 @@ namespace ufo {
 
     };
 
-    static D_EmptyList _EMPTY_LIST;
-    static D_List* EMPTY_LIST = &_EMPTY_LIST;
+    extern D_EmptyList _EMPTY_LIST;
+    extern D_List* EMPTY_LIST;
 
 }

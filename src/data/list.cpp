@@ -4,6 +4,9 @@
 
 namespace ufo {
 
+    D_EmptyList _EMPTY_LIST;
+    D_List* EMPTY_LIST = &_EMPTY_LIST;
+
     void D_List::dispose() {
     }
 

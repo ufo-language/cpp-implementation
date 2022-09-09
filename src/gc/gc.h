@@ -14,8 +14,10 @@ namespace ufo {
         void addObject(Any* object);
         void addRoot(Any* object);
         void collect();
+        void commit();
+        bool isGCNeeded();
 
-        // should be protected, but they're public for testing
+        // these functions should be protected, but they're public for testing
         void deleteAll();
         void dispose(std::queue<Any*>& deadObjects);
         bool isRegistered(Any* object);
@@ -25,11 +27,16 @@ namespace ufo {
 
         void dump();
 
+        unsigned int objectCountTrigger = 128;
+        size_t objectResidencyTrigger = 4096;
+
     protected:
         Any* _allObjects;
-        std::vector<Any*> _permantentObjects;
+        Any* _newObjects;
+        std::vector<Any*> _permanentObjects;
         std::vector<Any*> _rootObjects;
-        unsigned int _numObjects;
+        unsigned int _objectCount;
+        size_t _objectResidency;
     };
 
     extern GC THE_GC;

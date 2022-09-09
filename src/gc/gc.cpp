@@ -8,7 +8,7 @@ namespace ufo {
     GC THE_GC;
 
     GC::GC()
-        : _allObjects{nullptr} {
+        : _allObjects{nullptr}, _newObjects{nullptr}, _objectCount{0}, _objectResidency{0} {
     }
 
     GC::~GC() {
@@ -22,6 +22,8 @@ namespace ufo {
     void GC::addObject(Any* object) {
         object->setNext(_allObjects);
         _allObjects = object;
+        _objectCount++;
+        _objectResidency += object->size();
     }
 
     void GC::collect() {
@@ -34,10 +36,39 @@ namespace ufo {
     void GC::deleteAll() {
         while (_allObjects) {
             Any* next = _allObjects->getNext();
-            std::cout << "GC::deleteAll deleting " << (void*)_allObjects << " " << _allObjects << "\n";
             delete _allObjects;
             _allObjects = next;
         }
+        _newObjects = nullptr;
+        _permanentObjects.clear();
+        _rootObjects.clear();
+    }
+
+    void GC::dispose(std::queue<Any*>& deadObjects) {
+        int nObjs = deadObjects.size();
+        for (int n=0; n<nObjs; n++) {
+            Any* object = deadObjects.front();
+            deadObjects.pop();
+            object->dispose();
+        }
+    }
+
+    void GC::dump() {
+        Any* object = _allObjects;
+        int n = 0;
+        std::cout << "GC dump:\n";
+        while (object) {
+            std::cout << n++ << ". ";
+            std::cout << (object->isMarked() ? "[+] " : "[_] ");
+            std::cout << object << " @" << (void*)object;
+            std::cout << " -> " << (void*)object->getNext();
+            std::cout << "\n";
+            object = object->getNext();
+        }
+    }
+
+    bool GC::isGCNeeded() {
+        return _objectCount >= objectCountTrigger || _objectResidency >= objectResidencyTrigger;
     }
 
     bool GC::isRegistered(Any* object) {
@@ -93,28 +124,6 @@ namespace ufo {
                 deadObjects.push(object);
             }
             object = next;
-        }
-    }
-
-    void GC::dispose(std::queue<Any*>& deadObjects) {
-        int nObjs = deadObjects.size();
-        for (int n=0; n<nObjs; n++) {
-            Any* object = deadObjects.front();
-            deadObjects.pop();
-            object->dispose();
-        }
-    }
-
-    void GC::dump() {
-        Any* object = _allObjects;
-        int n = 0;
-        while (object) {
-            std::cout << n++ << ". ";
-            std::cout << (object->isMarked() ? "[+] " : "[_] ");
-            std::cout << object << " @" << (void*)object;
-            std::cout << " -> " << (void*)object->getNext();
-            std::cout << "\n";
-            object = object->getNext();
         }
     }
 

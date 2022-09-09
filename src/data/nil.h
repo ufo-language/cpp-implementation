@@ -19,7 +19,7 @@ namespace ufo {
 
     };
 
-    static D_Nil _NIL;
-    static D_Nil* NIL = &_NIL;
+    extern D_Nil _NIL;
+    extern D_Nil* NIL;
 
 }
