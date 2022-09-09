@@ -13,7 +13,13 @@ $ cmake ..
 $ cmake --build .
 ```
 
+## Current status
+
+Goodness, right now it doesn't do **anything**.
+
 ## Running example programs
+
+Someday you'll be able to do this.
 
 ```
 $ bin/ufo
@@ -29,10 +35,6 @@ UFO>
 ## Caveat programmator
 
 This version of UFO is not yet compliant with the docs, and probably also diverges a bit from it. I can't decide if I want to change the docs to fit the language, or change the language to fit the docs. I guess they're both sort of converging as I fill out the language.
-
-## Current status
-
-Goodness, it doesn't do //anything//.
 
 ## Features
 
