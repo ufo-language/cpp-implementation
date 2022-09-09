@@ -20,8 +20,8 @@ namespace ufo {
     }
 
     void GC::addObject(Any* object) {
-        object->setNext(_allObjects);
-        _allObjects = object;
+        object->setNext(_newObjects);
+        _newObjects = object;
         _objectCount++;
         _objectResidency += object->size();
     }
@@ -34,12 +34,12 @@ namespace ufo {
     }
 
     void GC::deleteAll() {
-        while (_allObjects) {
-            Any* next = _allObjects->getNext();
-            delete _allObjects;
-            _allObjects = next;
+        while (_newObjects) {
+            Any* next = _newObjects->getNext();
+            delete _newObjects;
+            _newObjects = next;
         }
-        _newObjects = nullptr;
+        _allObjects = nullptr;
         _permanentObjects.clear();
         _rootObjects.clear();
     }
@@ -54,14 +54,23 @@ namespace ufo {
     }
 
     void GC::dump() {
-        Any* object = _allObjects;
+        Any* object = _newObjects;
         int n = 0;
         std::cout << "GC dump:\n";
+        bool committed = false;
         while (object) {
+            if (object == _allObjects) {
+                committed = true;
+            }
             std::cout << n++ << ". ";
-            std::cout << (object->isMarked() ? "[+] " : "[_] ");
+            std::cout << "R:" << (isRoot(object) ? "[+] " : "[_] ");
+            std::cout << "C:" << (committed ? "[+] " : "[_] ");
+            std::cout << "M:" << (object->isMarked() ? "[+] " : "[_] ");
             std::cout << object << " @" << (void*)object;
             std::cout << " -> " << (void*)object->getNext();
+            if (_newObjects == _allObjects) {
+                std::cout << ", committed";
+            }
             std::cout << "\n";
             object = object->getNext();
         }
@@ -71,13 +80,28 @@ namespace ufo {
         return _objectCount >= objectCountTrigger || _objectResidency >= objectResidencyTrigger;
     }
 
+    bool GC::isCommitted(Any* object) {
+        bool isCommitted = false;
+        Any* objects = _newObjects;
+        while (objects) {
+            if (objects == _allObjects) {
+                isCommitted = true;
+            }
+            if (objects == object) {
+                return isCommitted;
+            }
+            objects = objects->getNext();
+        }
+        return false;
+    }
+
     bool GC::isRegistered(Any* object) {
-        Any* allObjects = _allObjects;
-        while (allObjects) {
-            if (object == allObjects) {
+        Any* objects = _newObjects;
+        while (objects) {
+            if (object == objects) {
                 return true;
             }
-            allObjects = allObjects->getNext();
+            objects = objects->getNext();
         }
         return false;
     }
@@ -92,16 +116,23 @@ namespace ufo {
     }
 
     void GC::mark() {
-        std::queue<Any*> markedQ;
+        std::queue<Any*> markedObjects;
+        // mark all root objects
         for (Any* object : _rootObjects) {
-            markedQ.push(object);
+            markedObjects.push(object);
         }
-        while (!markedQ.empty()) {
-            Any* object = markedQ.front();
-            markedQ.pop();
+        // mark all new objects
+        Any* newObjects = _newObjects;
+        while (newObjects != _allObjects) {
+            markedObjects.push(newObjects);
+            newObjects = newObjects->getNext();
+        }
+        while (!markedObjects.empty()) {
+            Any* object = markedObjects.front();
+            markedObjects.pop();
             if (!object->isMarked()) {
                 object->setMarked(true);
-                object->markChildren(markedQ);
+                object->markChildren(markedObjects);
             }
         }
     }

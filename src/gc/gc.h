@@ -14,12 +14,13 @@ namespace ufo {
         void addObject(Any* object);
         void addRoot(Any* object);
         void collect();
-        void commit();
+        void commit() { _allObjects = _newObjects; }
         bool isGCNeeded();
 
         // these functions should be protected, but they're public for testing
         void deleteAll();
         void dispose(std::queue<Any*>& deadObjects);
+        bool isCommitted(Any* object);
         bool isRegistered(Any* object);
         bool isRoot(Any* object);
         void mark();

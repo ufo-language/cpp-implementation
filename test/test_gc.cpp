@@ -17,9 +17,11 @@ namespace ufo {
         int id;
         int disposeCalled = 0;
         int markChildrenCalled = 0;
-        TestClass() : Any() {
+        TestClass() : Any{} {
             id = nextId++;
-        }                
+        }
+        ~TestClass() {
+        }
         void dispose() {
             this->disposeCalled++;
         }
@@ -47,6 +49,56 @@ namespace ufo {
         REQUIRE(THE_GC.isRegistered(list1));
     }
 
+    TEST_CASE("register and commit", "[gc]") {
+        THE_GC.deleteAll();
+        TestClass* testObj1 = new TestClass();
+        REQUIRE(!THE_GC.isCommitted(testObj1));
+        THE_GC.commit();
+        REQUIRE(THE_GC.isCommitted(testObj1));
+        TestClass* testObj2 = new TestClass();
+        REQUIRE(THE_GC.isCommitted(testObj1));
+        REQUIRE(!THE_GC.isCommitted(testObj2));
+        THE_GC.commit();
+        REQUIRE(THE_GC.isCommitted(testObj1));
+        REQUIRE(THE_GC.isCommitted(testObj2));
+    }
+
+    TEST_CASE("mark", "[gc]") {
+        THE_GC.deleteAll();
+        TestClass* testObj1 = new TestClass();
+        TestClass* testObj2 = new TestClass();
+        REQUIRE(!testObj1->isMarked());
+        REQUIRE(!testObj2->isMarked());
+
+        SECTION("mark uncommitted non-root objects") {
+            THE_GC.mark();
+            REQUIRE(testObj1->isMarked());
+            REQUIRE(testObj2->isMarked());
+        }
+
+        SECTION("mark committed non-root objects") {
+            THE_GC.commit();
+            THE_GC.mark();
+            REQUIRE(!testObj1->isMarked());
+            REQUIRE(!testObj2->isMarked());
+        }
+
+        SECTION("mark uncommitted with one root object") {
+            THE_GC.addRoot(testObj1);
+            THE_GC.mark();
+            REQUIRE(testObj1->isMarked());
+            REQUIRE(testObj2->isMarked());
+        }
+
+        SECTION("mark committed with one root object") {
+            THE_GC.addRoot(testObj1);
+            THE_GC.commit();
+            THE_GC.mark();
+            REQUIRE(testObj1->isMarked());
+            REQUIRE(!testObj2->isMarked());
+        }
+    }
+
     TEST_CASE("all phases", "[gc]") {
         THE_GC.deleteAll();
         TestClass* testObj1 = new TestClass();
@@ -63,6 +115,8 @@ namespace ufo {
 
         REQUIRE(THE_GC.isRoot(testObj1));
         REQUIRE(!THE_GC.isRoot(testObj2));
+
+        THE_GC.commit();
 
         SECTION("mark sweep dispose") {
             THE_GC.mark();
@@ -86,12 +140,9 @@ namespace ufo {
 
         SECTION("collect") {
             THE_GC.collect();
-
             REQUIRE(testObj1->disposeCalled == 0);
             REQUIRE(testObj2->disposeCalled == 1);
         }
-
-        delete testObj2;
     }
     
 }
