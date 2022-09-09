@@ -4,7 +4,9 @@
 
 namespace ufo {
 
-    void D_Queue::dispose() {
+    Any* D_Queue::deq() {
+        // TODO
+        _count--;
     }
 
     void D_Queue::enq(Any* elem) {
@@ -16,6 +18,7 @@ namespace ufo {
             _last->setRest(last);
             _last = last;
         }
+        _count++;
     }
 
     Any* D_Queue::evaluate(Evaluator* etor) {
@@ -33,14 +36,15 @@ namespace ufo {
     void D_Queue::markChildren(std::queue<Any*>& markedObjects) {
         D_List* elems = _elems;
         while (!elems->isEmpty()) {
-            Any* elem = _elems->getFirst();
+            Any* elem = elems->getFirst();
             markedObjects.push(elem);
             elems = (D_List*)elems->getRest();
         }
     }
 
     void D_Queue::show(std::ostream& stream) {
-        stream << "A-QUEUE";
+        stream << "~";
+        _elems->show(stream);
     }
 
 }

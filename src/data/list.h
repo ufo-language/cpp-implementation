@@ -42,6 +42,7 @@ namespace ufo {
             : D_List(nullptr, nullptr) {}
 
         bool isEmpty() override { return true; }
+
         virtual Any* getFirst() {
             throw UFOException("attempt to get 'first' field of empty list", this);
         }

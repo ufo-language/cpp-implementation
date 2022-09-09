@@ -18,12 +18,12 @@ namespace ufo {
 
         TypeId getTypeId() override { return T_Queue; }
 
-        void dispose() override;
         Any* evaluate(Evaluator* etor) override;
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
         D_List* asList() { return _elems; }
+        int count() { return _count; }
         Any* deq();
         void enq(Any* object);
         bool isEmpty() { return _elems->isEmpty(); }
@@ -31,6 +31,7 @@ namespace ufo {
     protected:
         D_List* _elems;
         D_List* _last;
+        int _count = 0;
     };
 
 }

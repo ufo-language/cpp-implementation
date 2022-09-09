@@ -9,7 +9,7 @@
 
 namespace ufo {
 
-    TEST_CASE("create", "[list]") {
+    TEST_CASE("lsit create", "[list]") {
         D_List* list1 = new D_List(NIL, NIL);
         REQUIRE(!list1->isEmpty());
     }
@@ -22,7 +22,7 @@ namespace ufo {
         REQUIRE(EMPTY_LIST->isEmpty());
     }
 
-    TEST_CASE("get and set", "[list]") {
+    TEST_CASE("lsit get and set", "[list]") {
         D_Integer* i100 = new D_Integer(100);
         D_Integer* i200 = new D_Integer(200);
         D_List* list1 = new D_List(i100, i200);
@@ -36,7 +36,7 @@ namespace ufo {
         REQUIRE(i400 == list1->getRest());
     }
 
-    TEST_CASE("mark children", "[list][gc]") { 
+    TEST_CASE("list mark children", "[list][gc]") {
         D_Integer* i100 = new D_Integer(100);
         D_Integer* i200 = new D_Integer(200);
         THE_GC.commit();

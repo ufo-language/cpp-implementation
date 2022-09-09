@@ -20,7 +20,27 @@ namespace ufo {
     }
 
     void D_List::show(std::ostream& stream) {
-        stream << "A-LIST";
+        D_List* list = this;
+        bool firstIter = true;
+        stream << '[';
+        while (!list->isEmpty()) {
+            if (firstIter) {
+                firstIter = false;
+            }
+            else {
+                stream << ", ";
+            }
+            stream << list->getFirst();
+            Any* rest = list->getRest();
+            if (rest->getTypeId() == T_List) {
+                list = (D_List*)rest;
+            }
+            else {
+                stream << " | " << rest;
+                break;
+            }
+        }
+        stream << ']';
     }
 
 }
