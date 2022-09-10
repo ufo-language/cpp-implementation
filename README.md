@@ -42,10 +42,11 @@ This version of UFO is not yet compliant with the docs, and probably also diverg
 
 ## Development
 
-* Written using Emacs. I won't get into a holy war over editors. The best editor is the one you prefer to use.
+* Written using Emacs. I won't get into a holy war over editors. The best editor is the one you prefer to use. Yeah, I know modern editors are in some ways "better", but I use Emacs because I like to use Emacs. That means I don't care about min/maxing my keystrokes, or effective committed machine code instructions per millisecond or anything like that. Writing good code is partly science and partly art, and this is how I practice my art.
+* Built using CMake.
 * Compiled using G++.
-* Memory tested using valgrind.
-* Running in Ubuntu 20 in VirtualBox on a Mac Mini.
+* Memory tested using Valgrind.
+* Running in Ubuntu 20 in VirtualBox, provisioned using Vagrant, on a Mac Mini.
 
 ## The future of UFO
 
