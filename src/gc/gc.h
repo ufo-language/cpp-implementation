@@ -14,7 +14,7 @@ namespace ufo {
         void addObject(Any* object);
         void addRoot(Any* object);
         void collect();
-        void commit() { _allObjects = _newObjects; }
+        void commit() { _committedObjects = _spine; }
         bool isGCNeeded();
 
         // these functions should be protected, but they're public for testing
@@ -32,12 +32,12 @@ namespace ufo {
         size_t objectResidencyTrigger = 4096;
 
     protected:
-        Any* _allObjects;
-        Any* _newObjects;
-        std::vector<Any*> _permanentObjects;
+        Any* _spine = nullptr;  // all non-commited objects; tail ponts to _committedObjects
+        Any* _committedObjects = nullptr;
+        Any* _permanentObjects = nullptr;
+        unsigned int _objectCount = 0;
+        size_t _objectResidency = 0;
         std::vector<Any*> _rootObjects;
-        unsigned int _objectCount;
-        size_t _objectResidency;
     };
 
     extern GC THE_GC;

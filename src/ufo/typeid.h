@@ -52,6 +52,7 @@ namespace ufo {
         T_StringBuffer,
         T_StringStream,
         T_Symbol,
+        T_Task,
         T_Term,
         T_Triple,
         T_TryCatch,

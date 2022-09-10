@@ -9,11 +9,12 @@ namespace ufo {
 
     class D_Nil : public Any {
     public:
-        D_Nil() {}
+        D_Nil()
+            : Any{T_Nil} {
+        }
 
-        TypeId getTypeId() override { return T_Nil; }
-
-        void show(std::ostream& stream) { stream << "nil"; }
+        // overridden methods
+        void show(std::ostream& stream) override { stream << "nil"; }
 
     protected:
 

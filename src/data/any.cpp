@@ -1,11 +1,13 @@
 #include "data/any.h"
 #include "gc/gc.h"
+#include "ufo/typeid.h"
 
 namespace ufo {
 
     extern GC THE_GC;
 
-    Any::Any() {
+    Any::Any(TypeId typeId)
+        : _typeId{typeId} {
         THE_GC.addObject(this);
     }
 

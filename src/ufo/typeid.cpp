@@ -51,6 +51,7 @@ namespace ufo {
         "StringBuffer",
         "StringStream",
         "Symbol",
+        "Task",
         "Term",
         "Triple",
         "TryCatch",

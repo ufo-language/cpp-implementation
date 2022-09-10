@@ -8,6 +8,8 @@ namespace ufo {
     D_List* EMPTY_LIST = &_EMPTY_LIST;
 
     void D_List::dispose() {
+        std::cerr << "D_List::dispose called\n";
+        delete this;
     }
 
     Any* D_List::evaluate(Evaluator* etor) {

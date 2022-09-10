@@ -10,16 +10,14 @@ namespace ufo {
     class D_Integer : public Any {
     public:
         D_Integer(int n)
-            : Any{} {
-            _n = n;
+            : Any{T_Integer}, _n{n} {
         }
 
         // overridden methods
-        TypeId getTypeId() override { return T_Integer; }
+        void show(std::ostream& stream) override { stream << _n; }
 
         // unique methods
         int getValue() { return _n; }
-        void show(std::ostream& stream) { stream << _n; }
 
     protected:
         int _n;

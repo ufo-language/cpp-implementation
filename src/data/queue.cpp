@@ -1,15 +1,15 @@
-#include <iostream>
-
 #include "queue.h"
-
-#include <assert.h>
 
 namespace ufo {
 
     Any* D_Queue::deq() {
-        // TODO
-        assert(false);
+        if (_elems->isEmpty()) {
+            throw UFOException("queue empty", this);
+        }
+        Any* elem = _elems->getFirst();
+        _elems = (D_List*)_elems->getRest();
         _count--;
+        return elem;
     }
 
     void D_Queue::enq(Any* elem) {
@@ -40,7 +40,6 @@ namespace ufo {
         D_List* elems = _elems;
         while (!elems->isEmpty()) {
             Any* elem = elems->getFirst();
-            std::cout << "D_Queue::markChildren pushing elem " << elem << "\n";
             markedObjects.push(elem);
             elems = (D_List*)elems->getRest();
         }

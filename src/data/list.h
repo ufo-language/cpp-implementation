@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cassert>
 #include <iostream>
 #include <queue>
 
@@ -16,16 +15,16 @@ namespace ufo {
     class D_List : public Any {
     public:
         D_List(Any* first, Any* rest)
-           : Any{}, _first{first}, _rest{rest} {
+           : Any{T_List}, _first{first}, _rest{rest} {
         }
 
-        TypeId getTypeId() override { return T_List; }
-
+        // overridden methods
         void dispose() override;
         Any* evaluate(Evaluator* etor) override;
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
+        // unique methods
         virtual bool isEmpty() { return false; }
         virtual Any* getFirst() { return _first; }
         virtual Any* getRest() { return _rest; }

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <iostream>
 #include <queue>
 
 #include "data/any.h"
 #include "data/list.h"
+#include "ufo/typeid.h"
 
 namespace ufo {
 
@@ -13,15 +13,15 @@ namespace ufo {
     class D_Queue : public Any {
     public:
         D_Queue()
-            : _elems{EMPTY_LIST}, _last{EMPTY_LIST} {
+            : Any{T_Queue}, _elems{EMPTY_LIST}, _last{EMPTY_LIST} {
         }
 
-        TypeId getTypeId() override { return T_Queue; }
-
+        // overridden methods
         Any* evaluate(Evaluator* etor) override;
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
+        // unique methods
         D_List* asList() { return _elems; }
         int count() { return _count; }
         Any* deq();
