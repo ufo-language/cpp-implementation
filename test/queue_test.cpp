@@ -10,19 +10,15 @@
 namespace ufo {
 
     TEST_CASE("queue create and delete", "[queue]") {
-        std::cout << "queue_test 'create and delete' starting\n";
-        std::cout << "==== queue create and delete calling deleteAll ====\n";
         THE_GC.deleteAll();
         D_Queue* queue1 = new D_Queue();
         REQUIRE(queue1->isEmpty());
         REQUIRE(queue1->count() == 0);
         REQUIRE(THE_GC.isRegistered(queue1));
         THE_GC.deleteAll();
-        std::cout << "queue_test 'create and delete' finished\n";
     }
  
     TEST_CASE("queue mark children", "[queue][gc]") {
-        std::cout << "queue_test 'mark children' starting\n";
         THE_GC.deleteAll();
         D_Integer* i100 = new D_Integer(100);
         D_Integer* i200 = new D_Integer(200);
@@ -37,11 +33,9 @@ namespace ufo {
         REQUIRE(i100->isMarked());
         REQUIRE(i200->isMarked());
         REQUIRE(queue1->isMarked());
-        std::cout << "queue_test 'mark children' finished\n";
     }
 
     TEST_CASE("queue enq deq count", "[queue]") {
-        std::cout << "queue_test 'enq deq count' starting\n";
         THE_GC.deleteAll();
         D_Integer* i100 = new D_Integer(100);
         D_Integer* i200 = new D_Integer(200);
@@ -60,7 +54,6 @@ namespace ufo {
         REQUIRE(1 == queue1->count());
         REQUIRE(i300 == queue1->deq());
         REQUIRE(0 == queue1->count());
-        std::cout << "queue_test 'enq deq count' finished\n";
     }
 
 }

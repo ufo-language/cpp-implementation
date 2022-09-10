@@ -8,7 +8,7 @@ namespace ufo {
     D_List* EMPTY_LIST = &_EMPTY_LIST;
 
     void D_List::dispose() {
-        std::cerr << "D_List::dispose called\n";
+        // TODO recycle this object
         delete this;
     }
 

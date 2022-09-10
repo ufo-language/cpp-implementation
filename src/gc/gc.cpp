@@ -1,4 +1,3 @@
-#include <cassert>
 #include <queue>
 
 #include "data/any.h"
@@ -23,7 +22,6 @@ namespace ufo {
         _spine = object;
         _objectCount++;
         _objectResidency += object->size();
-        std::cout << "GC::addObject registered object at " << (void*)object << "\n";
     }
 
     void GC::collect() {
@@ -31,16 +29,11 @@ namespace ufo {
         std::queue<Any*> deadObjects;
         sweep(deadObjects);
         dispose(deadObjects);
-        std::cout << "GC::collect objectConut = " << _objectCount << "\n";
     }
 
     void GC::deleteAll() {
-        std::cout << "GC::deleteAll deleting " << _objectCount << " objects\n";
-        assert(_objectCount == 0 ? _committedObjects == nullptr && _spine == nullptr: true);
         while (_spine) {
             Any* next = _spine->getNext();
-            //delete _spine;
-            std::cout << "GC::deleteAll disposing " << TYPE_NAMES[_spine->getTypeId()] << " typeId=" << (int)_spine->getTypeId() << " @ " << (void*)_spine << "\n";
             _spine->dispose();
             _spine = next;
         }
@@ -49,9 +42,6 @@ namespace ufo {
         _rootObjects.clear();
         _objectCount = 0;
         _objectResidency = 0;
-        assert(_objectCount == 0 ? _committedObjects == nullptr && _spine == nullptr: true);
-        assert(_objectCount == 0 ? _committedObjects == nullptr : true);
-        assert(_committedObjects == nullptr ? _objectCount == 0 : true);
     }
 
     void GC::dispose(std::queue<Any*>& deadObjects) {
@@ -59,33 +49,28 @@ namespace ufo {
         for (int n=0; n<nObjs; n++) {
             Any* object = deadObjects.front();
             deadObjects.pop();
-            assert(_objectCount > 0);
             _objectCount--;
             _objectResidency -= object->size();
             object->dispose();
         }
-        assert(_objectCount == 0 ? _committedObjects == nullptr && _spine == nullptr: true);
     }
 
     void GC::dump() {
         Any* object = _spine;
         int n = 0;
-        std::cout << "GC dump:\n";
+        std::cerr << "GC dump:\n";
         bool committed = false;
         while (object) {
             if (object == _committedObjects) {
                 committed = true;
             }
-            std::cout << n++ << ". ";
-            std::cout << "R:" << (isRoot(object) ? "[+] " : "[_] ");
-            std::cout << "C:" << (committed ? "[+] " : "[_] ");
-            std::cout << "M:" << (object->isMarked() ? "[+] " : "[_] ");
-            std::cout << object << " @" << (void*)object;
-            std::cout << " -> " << (void*)object->getNext();
-            if (_spine == _committedObjects) {
-                std::cout << ", committed";
-            }
-            std::cout << "\n";
+            std::cerr << n++ << ". ";
+            std::cerr << "Root:" << (isRoot(object) ? "[+] " : "[_] ");
+            std::cerr << "Comm:" << (committed ? "[+] " : "[_] ");
+            std::cerr << "Mark:" << (object->isMarked() ? "[+] " : "[_] ");
+            std::cerr << object << " @" << (void*)object;
+            std::cerr << " -> " << (void*)object->getNext();
+            std::cerr << "\n";
             object = object->getNext();
         }
     }
@@ -151,11 +136,7 @@ namespace ufo {
         }
     }
 
-    void GC::sweep(std::queue<Any*>& deadObjects) {
-        // unmark all root ojects
-        for (Any* object : _rootObjects) {
-            object->setMarked(false);
-        }
+    void GC::sweep(std::queue<Any*>& /*out*/ deadObjects) {
         Any* prev = NULL;
         Any* object = _spine;
         // these are the non-committed objects
@@ -184,11 +165,13 @@ namespace ufo {
                 if (object == _committedObjects) {
                     _committedObjects = next;
                 }
-                //printf("%s freeing obj @ %p, type %s\n ", __func__, (void*)obj, any_typeName(obj));
-                //object->dispose();
                 deadObjects.push(object);
             }
             object = next;
+        }
+        // unmark all root ojects
+        for (Any* object : _rootObjects) {
+            object->setMarked(false);
         }
     }
 
