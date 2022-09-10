@@ -116,31 +116,25 @@ namespace ufo {
     }
 
     void GC::mark() {
-        std::cout << "GC::mark called\n";
         std::queue<Any*> markedObjects;
         // mark all root objects
         for (Any* object : _rootObjects) {
-            std::cout << "GC::mark pushing root object " << object << "\n";
             markedObjects.push(object);
         }
         // mark all new objects
         Any* newObjects = _newObjects;
         while (newObjects != _allObjects) {
-            std::cout << "GC::mark pushing new object " << newObjects << "\n";
             markedObjects.push(newObjects);
             newObjects = newObjects->getNext();
         }
-        std::cout << "GC::mark queue size = " << markedObjects.size() << "\n";
         while (!markedObjects.empty()) {
             Any* object = markedObjects.front();
-            std::cout << "GC::mark popped object " << object << "\n";
             markedObjects.pop();
             if (!object->isMarked()) {
                 object->setMarked(true);
                 object->markChildren(markedObjects);
             }
         }
-        std::cout << "GC:mark finished\n";
     }
 
     void GC::sweep(std::queue<Any*>& deadObjects) {

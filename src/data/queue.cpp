@@ -2,10 +2,13 @@
 
 #include "queue.h"
 
+#include <assert.h>
+
 namespace ufo {
 
     Any* D_Queue::deq() {
         // TODO
+        assert(false);
         _count--;
     }
 
@@ -37,6 +40,7 @@ namespace ufo {
         D_List* elems = _elems;
         while (!elems->isEmpty()) {
             Any* elem = elems->getFirst();
+            std::cout << "D_Queue::markChildren pushing elem " << elem << "\n";
             markedObjects.push(elem);
             elems = (D_List*)elems->getRest();
         }

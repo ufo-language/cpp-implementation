@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <iostream>
 #include <queue>
 
@@ -15,7 +16,8 @@ namespace ufo {
     class D_List : public Any {
     public:
         D_List(Any* first, Any* rest)
-           : Any{}, _first{first}, _rest{rest} {}
+           : Any{}, _first{first}, _rest{rest} {
+        }
 
         TypeId getTypeId() override { return T_List; }
 
@@ -49,6 +51,7 @@ namespace ufo {
         virtual Any* getRest() {
             throw UFOException("attempt to get 'rest' field of empty list", this);
         }
+        void markChildren(std::queue<Any*>& markedObjects) override { (void)markedObjects; }
         virtual void setFirst(Any* first) {
             (void)first;
             throw UFOException("attempt to set 'first' field of empty list", this);
