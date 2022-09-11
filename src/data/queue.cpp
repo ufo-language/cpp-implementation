@@ -1,6 +1,17 @@
+#include <list>
+#include <queue>
+
 #include "queue.h"
 
 namespace ufo {
+
+    D_Queue* D_Queue::create(const std::list<Any*>& elems, GC::Lifetime lifetime) {
+        D_Queue* queue = new D_Queue(lifetime);
+        for (Any* elem : elems) {
+            queue->enq(elem);
+        }
+        return queue;
+    }
 
     Any* D_Queue::deq() {
         if (_elems->isEmpty()) {
@@ -14,10 +25,10 @@ namespace ufo {
 
     void D_Queue::enq(Any* elem) {
         if (_last->isEmpty()) {
-            _elems = _last = new D_List(elem, EMPTY_LIST);
+            _elems = _last = D_List::create(elem, GLOBALS.emptyList());
         }
         else {
-            D_List* last = new D_List(elem, EMPTY_LIST);
+            D_List* last = D_List::create(elem, GLOBALS.emptyList());
             _last->setRest(last);
             _last = last;
         }
@@ -25,7 +36,7 @@ namespace ufo {
     }
 
     Any* D_Queue::evaluate(Evaluator* etor) {
-        D_Queue* qNew = new D_Queue();
+        D_Queue* qNew = new D_Queue(GC::GC_Transient);
         D_List* elems = _elems;
         while (!elems->isEmpty()) {
             Any* elem = _elems->getFirst();

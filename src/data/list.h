@@ -4,6 +4,8 @@
 #include <queue>
 
 #include "data/any.h"
+#include "gc/gc.h"
+#include "ufo/globals.h"
 #include "ufo/typeid.h"
 #include "ufo/ufoexception.h"
 
@@ -14,9 +16,7 @@ namespace ufo {
     
     class D_List : public Any {
     public:
-        D_List(Any* first, Any* rest)
-           : Any{T_List}, _first{first}, _rest{rest} {
-        }
+        static D_List* create(Any* first, Any* rest, GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
         void dispose() override;
@@ -32,6 +32,10 @@ namespace ufo {
         virtual void setRest(Any* rest) { _rest = rest; }
 
     protected:
+        D_List(Any* first, Any* rest, GC::Lifetime lifetime)
+           : Any{T_List, lifetime}, _first{first}, _rest{rest} {
+        }
+
         Any* _first;
         Any* _rest;
 
@@ -39,9 +43,6 @@ namespace ufo {
 
     class D_EmptyList : public D_List {
     public:
-        D_EmptyList()
-            : D_List(nullptr, nullptr) {}
-
         bool isEmpty() override { return true; }
 
         virtual Any* getFirst() {
@@ -60,9 +61,11 @@ namespace ufo {
             throw UFOException("attempt to set 'rest' field of empty list", this);
         }
 
-    };
+        friend Globals;
 
-    extern D_EmptyList _EMPTY_LIST;
-    extern D_List* EMPTY_LIST;
+    protected:
+        D_EmptyList()
+            : D_List(nullptr, nullptr, GC::GC_Permanent) {}
+    };
 
 }

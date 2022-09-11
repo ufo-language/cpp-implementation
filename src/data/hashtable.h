@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "data/any.h"
+#include "gc/gc.h"
 #include "ufo/typeid.h"
 
 namespace ufo {
@@ -11,9 +12,7 @@ namespace ufo {
     
     class D_HashTable : public Any {
     public:
-        D_HashTable()
-            : Any{T_HashTable} {
-        }
+        static D_HashTable* create(GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
         void dispose() override;
@@ -25,6 +24,10 @@ namespace ufo {
         bool isEmpty() { return _hash.empty(); }
 
     protected:
+        D_HashTable(GC::Lifetime lifetime)
+            : Any{T_HashTable, lifetime} {
+        }
+
         std::unordered_map<Any*, Any*> _hash;
     };
 

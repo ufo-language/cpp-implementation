@@ -1,9 +1,12 @@
 #pragma once
 
+#include <list>
 #include <queue>
 
 #include "data/any.h"
 #include "data/list.h"
+#include "gc/gc.h"
+#include "ufo/globals.h"
 #include "ufo/typeid.h"
 
 namespace ufo {
@@ -12,9 +15,7 @@ namespace ufo {
     
     class D_Queue : public Any {
     public:
-        D_Queue()
-            : Any{T_Queue}, _elems{EMPTY_LIST}, _last{EMPTY_LIST} {
-        }
+        static D_Queue* create(const std::list<Any*>& elems={}, GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
         Any* evaluate(Evaluator* etor) override;
@@ -29,6 +30,10 @@ namespace ufo {
         bool isEmpty() { return _elems->isEmpty(); }
 
     protected:
+        D_Queue(GC::Lifetime lifetime)
+            : Any{T_Queue, lifetime}, _elems{GLOBALS.emptyList()}, _last{GLOBALS.emptyList()} {
+        }
+
         D_List* _elems;
         D_List* _last;
         int _count = 0;

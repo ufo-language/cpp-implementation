@@ -3,15 +3,14 @@
 #include <iostream>
 
 #include "data/any.h"
+#include "gc/gc.h"
 #include "ufo/typeid.h"
 
 namespace ufo {
 
     class D_Integer : public Any {
     public:
-        D_Integer(int n)
-            : Any{T_Integer}, _n{n} {
-        }
+        static D_Integer* create(int n, GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
         void show(std::ostream& stream) override { stream << _n; }
@@ -20,6 +19,10 @@ namespace ufo {
         int getValue() { return _n; }
 
     protected:
+        D_Integer(int n, GC::Lifetime lifetime)
+            : Any{T_Integer, lifetime}, _n{n} {
+        }
+
         int _n;
 
     };

@@ -9,9 +9,7 @@ namespace ufo {
     
     class D_Task : public Any {
     public:
-        D_Task()
-            : Any{T_Task} {
-        }
+        static D_Task* create(GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
         Any* evaluate(Evaluator* etor) override;
@@ -21,7 +19,9 @@ namespace ufo {
         // unique methods
 
     protected:
-
+        D_Task(GC::Lifetime lifetime)
+            : Any{T_Task, lifetime} {
+        }
     };
 
 }

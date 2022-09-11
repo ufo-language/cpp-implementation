@@ -12,7 +12,7 @@ namespace ufo {
 
     class Any {
     public:
-        Any(TypeId typeId);
+        Any(TypeId typeId, GC::Lifetime lifetime);
         virtual ~Any();
 
         // pure virtual functions

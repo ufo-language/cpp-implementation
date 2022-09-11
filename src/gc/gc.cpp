@@ -13,15 +13,30 @@ namespace ufo {
         deleteAll();
     }
 
-    void GC::addRoot(Any* object) {
-        _rootObjects.push_back(object);
-    }
-
-    void GC::addObject(Any* object) {
-        object->setNext(_spine);
-        _spine = object;
+    void GC::addObject(Any* object, Lifetime lifetime) {
+        switch (lifetime) {
+            case GC_Permanent:
+                object->setNext(_permanentObjects);
+                _permanentObjects = object;
+                _nPermanentObjects++;
+                break;
+            case GC_Root:
+                object->setNext(_rootObjects);
+                _rootObjects = object;
+                _nRootObjects++;
+                break;
+            case GC_Transient:
+                object->setNext(_spine);
+                _spine = object;
+                _nRegisteredObjects++;
+                break;
+            case GC_Unmanaged:
+                // if an object is originally Unmanaged, then it is safe to call addObject()
+                // again with the same objct
+                return;
+        }
         _objectCount++;
-        _objectResidency += object->size();
+        _memoryResidency += object->size();
     }
 
     void GC::collect() {
@@ -31,17 +46,30 @@ namespace ufo {
         dispose(deadObjects);
     }
 
-    void GC::deleteAll() {
-        while (_spine) {
-            Any* next = _spine->getNext();
-            _spine->dispose();
-            _spine = next;
+    void GC::_deleteList(Any* list) {
+        while (list != nullptr) {
+            Any* next = list->getNext();
+            _objectCount--;
+            _memoryResidency -= list->size();
+            list->dispose();
+            list = next;
         }
+    }
+    
+    void GC::deleteAll() {
+        _deleteList(_spine);
         _spine = nullptr;
+        _nRegisteredObjects = 0;
+        _deleteList(_rootObjects);
+        _rootObjects = nullptr;
+        _nRootObjects = 0;
         _committedObjects = nullptr;
-        _rootObjects.clear();
-        _objectCount = 0;
-        _objectResidency = 0;
+    }
+
+    void GC::deletePermanentObjects() {
+        _deleteList(_permanentObjects);
+        _permanentObjects = nullptr;
+        _nPermanentObjects = 0;
     }
 
     void GC::dispose(std::queue<Any*>& deadObjects) {
@@ -50,22 +78,23 @@ namespace ufo {
             Any* object = deadObjects.front();
             deadObjects.pop();
             _objectCount--;
-            _objectResidency -= object->size();
+            _memoryResidency -= object->size();
             object->dispose();
         }
     }
 
     void GC::dump() {
-        Any* object = _spine;
         int n = 0;
-        std::cerr << "GC dump:\n";
+        std::cerr << "vvvvvvvvvvvvvvvv\n";
+        std::cerr << "| GC dump\n";
+        std::cerr << "| Spine:\n";
         bool committed = false;
+        Any* object = _spine;
         while (object) {
             if (object == _committedObjects) {
                 committed = true;
             }
-            std::cerr << n++ << ". ";
-            std::cerr << "Root:" << (isRoot(object) ? "[+] " : "[_] ");
+            std::cerr << "| " << n++ << ". ";
             std::cerr << "Comm:" << (committed ? "[+] " : "[_] ");
             std::cerr << "Mark:" << (object->isMarked() ? "[+] " : "[_] ");
             std::cerr << object << " @" << (void*)object;
@@ -73,10 +102,31 @@ namespace ufo {
             std::cerr << "\n";
             object = object->getNext();
         }
+        std::cerr << "| Root objects:\n";
+        object = _rootObjects;
+        while (object) {
+            std::cerr << "| " << n++ << ". ";
+            std::cerr << "Mark:" << (object->isMarked() ? "[+] " : "[_] ");
+            std::cerr << object << " @" << (void*)object;
+            std::cerr << " -> " << (void*)object->getNext();
+            std::cerr << "\n";
+            object = object->getNext();
+        }
+        std::cerr << "| Permanent objects:\n";
+        object = _permanentObjects;
+        while (object) {
+            std::cerr << "| " << n++ << ". ";
+            std::cerr << "Mark:" << (object->isMarked() ? "[+] " : "[_] ");
+            std::cerr << object << " @" << (void*)object;
+            std::cerr << " -> " << (void*)object->getNext();
+            std::cerr << "\n";
+            object = object->getNext();
+        }
+        std::cerr << "^^^^^^^^^^^^^^^^\n";
     }
 
     bool GC::isGCNeeded() {
-        return _objectCount >= objectCountTrigger || _objectResidency >= objectResidencyTrigger;
+        return _objectCount >= objectCountTrigger || _memoryResidency >= memoryResidencyTrigger;
     }
 
     bool GC::isCommitted(Any* object) {
@@ -94,6 +144,17 @@ namespace ufo {
         return false;
     }
 
+    bool GC::isPermanent(Any* object) {
+        Any* object1 = _permanentObjects;
+        while (object1 != nullptr) {
+            if (object1 == object) {
+                return true;
+            }
+            object1 = object1->getNext();
+        }
+        return false;
+    }
+
     bool GC::isRegistered(Any* object) {
         Any* objects = _spine;
         while (objects) {
@@ -106,10 +167,12 @@ namespace ufo {
     }
 
     bool GC::isRoot(Any* object) {
-        for (Any* rootObject : _rootObjects) {
-            if (object == rootObject) {
+        Any* object1 = _rootObjects;
+        while (object1 != nullptr) {
+            if (object1 == object) {
                 return true;
             }
+            object1 = object1->getNext();
         }
         return false;
     }
@@ -117,8 +180,10 @@ namespace ufo {
     void GC::mark() {
         std::queue<Any*> markedObjects;
         // mark all root objects
-        for (Any* object : _rootObjects) {
+        Any* object = _rootObjects;
+        while (object != nullptr) {
             markedObjects.push(object);
+            object = object->getNext();
         }
         // mark all new objects
         Any* spine = _spine;
@@ -148,7 +213,7 @@ namespace ufo {
         }
         // these are the committed objects
         // they may be swept
-        while (object != _permanentObjects) {
+        while (object != nullptr) {
             Any* next = object->getNext();
             if (object->isMarked()) {
                 object->setMarked(false);
@@ -170,8 +235,10 @@ namespace ufo {
             object = next;
         }
         // unmark all root ojects
-        for (Any* object : _rootObjects) {
+        object = _rootObjects;
+        while (object != nullptr) {
             object->setMarked(false);
+            object = object->getNext();
         }
     }
 

@@ -1,19 +1,21 @@
 #include <iostream>
 
-#include "list.h"
+#include "data/list.h"
+#include "gc/gc.h"
 
 namespace ufo {
 
-    D_EmptyList _EMPTY_LIST;
-    D_List* EMPTY_LIST = &_EMPTY_LIST;
-
+    D_List* D_List::create(Any* first, Any* rest, GC::Lifetime lifetime) {
+        return new D_List(first, rest, lifetime);
+    }
+    
     void D_List::dispose() {
         // TODO recycle this object
         delete this;
     }
 
     Any* D_List::evaluate(Evaluator* etor) {
-        return new D_List(_first->evaluate(etor), _rest->evaluate(etor));
+        return new D_List(_first->evaluate(etor), _rest->evaluate(etor), GC::GC_Transient);
     }
 
     void D_List::markChildren(std::queue<Any*>& markedObjects) {
