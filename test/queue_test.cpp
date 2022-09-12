@@ -10,8 +10,9 @@
 namespace ufo {
 
     TEST_CASE("queue", "[queue]") {
-#if 0
         THE_GC.deleteAll();
+        THE_GC.deletePermanentObjects();
+        GLOBALS.setup();
 
         SECTION("create", "[queue]") {
             D_Queue* queue1 = D_Queue::create();
@@ -55,7 +56,9 @@ namespace ufo {
             REQUIRE(i300 == queue1->deq());
             REQUIRE(0 == queue1->count());
         }
-#endif
+
+        THE_GC.deleteAll();
+        THE_GC.deletePermanentObjects();
     }
 
 }

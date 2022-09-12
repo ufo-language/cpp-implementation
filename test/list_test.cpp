@@ -11,12 +11,12 @@
 namespace ufo {
 
     TEST_CASE("list", "[list]") {
-#if 0
         THE_GC.deleteAll();
+        THE_GC.deletePermanentObjects();
+        GLOBALS.setup();
 
         SECTION("create") {
             REQUIRE(GLOBALS.emptyList());
-            D_List* e = GLOBALS.emptyList();
             REQUIRE(GLOBALS.emptyList()->isEmpty());
             D_List* list1 = D_List::create(GLOBALS.nil(), GLOBALS.nil());
             REQUIRE(!list1->isEmpty());
@@ -57,7 +57,9 @@ namespace ufo {
             REQUIRE(i300 == list1->getFirst());
             REQUIRE(i400 == list1->getRest());
         }
-#endif
+
+        THE_GC.deleteAll();
+        THE_GC.deletePermanentObjects();
     }
 
 }
