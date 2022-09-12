@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "data/hashtable.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 
 #include <cassert>
 namespace ufo {

@@ -1,5 +1,5 @@
 #include "data/integer.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 
 namespace ufo {
 

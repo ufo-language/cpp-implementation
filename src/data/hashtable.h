@@ -3,7 +3,7 @@
 #include <unordered_map>
 
 #include "data/any.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 #include "ufo/typeid.h"
 
 namespace ufo {

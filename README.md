@@ -1,6 +1,6 @@
 # UFO C++ implementation
 
-This is a plain-vanilla C implementation of UFO. Currently it's written using the C11 standard.
+This is a C++ implementation of UFO.
 
 The target domain of UFO is concurrent, networked, and distributed computing. It's not quite there yet.
 

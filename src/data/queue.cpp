@@ -1,7 +1,8 @@
 #include <list>
 #include <queue>
 
-#include "queue.h"
+#include "data/queue.h"
+#include "memory/gc.h"
 
 namespace ufo {
 

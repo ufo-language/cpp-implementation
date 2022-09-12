@@ -9,7 +9,7 @@
 #include "data/integer.h"
 #include "data/list.h"
 #include "data/nil.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 #include "ufo/typeid.h"
 
 namespace ufo {

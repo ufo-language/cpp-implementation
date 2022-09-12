@@ -4,7 +4,7 @@
 #include <queue>
 
 #include "data/any.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 #include "ufo/globals.h"
 #include "ufo/typeid.h"
 #include "ufo/ufoexception.h"

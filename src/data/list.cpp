@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "data/list.h"
-#include "gc/gc.h"
+#include "memory/gc.h"
 
 namespace ufo {
 
