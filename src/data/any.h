@@ -12,11 +12,11 @@ namespace ufo {
 
     class Any {
     public:
-        Any(TypeId typeId, GC::Lifetime lifetime);
+        Any(GC::Lifetime lifetime);
         virtual ~Any();
 
         // pure virtual functions
-        TypeId getTypeId() { return _typeId; }
+        virtual TypeId getTypeId() = 0;
         virtual void show(std::ostream& stream) = 0;
 
         // virtual functions
@@ -37,8 +37,6 @@ namespace ufo {
     protected:
         Any* _next;
         bool _isMarked = false;
-        TypeId _typeId;
-
     };
 
     std::ostream& operator << (std::ostream& stream, std::nullptr_t ptr);

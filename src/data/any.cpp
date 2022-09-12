@@ -6,8 +6,7 @@ namespace ufo {
 
     extern GC THE_GC;
 
-    Any::Any(TypeId typeId, GC::Lifetime lifetime)
-        : _typeId{typeId} {
+    Any::Any(GC::Lifetime lifetime) {
         THE_GC.addObject(this, lifetime);
     }
 

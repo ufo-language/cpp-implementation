@@ -17,6 +17,7 @@ namespace ufo {
         // overridden methods
         void dispose() override;
         Any* evaluate(Evaluator* etor) override;
+        TypeId getTypeId() override { return T_HashTable; }
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
@@ -25,7 +26,7 @@ namespace ufo {
 
     protected:
         D_HashTable(GC::Lifetime lifetime)
-            : Any{T_HashTable, lifetime} {
+            : Any{lifetime} {
         }
 
         std::unordered_map<Any*, Any*> _hash;

@@ -19,6 +19,7 @@ namespace ufo {
 
         // overridden methods
         Any* evaluate(Evaluator* etor) override;
+        TypeId getTypeId() override { return T_Queue; }
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
@@ -31,7 +32,7 @@ namespace ufo {
 
     protected:
         D_Queue(GC::Lifetime lifetime)
-            : Any{T_Queue, lifetime}, _elems{GLOBALS.emptyList()}, _last{GLOBALS.emptyList()} {
+            : Any{lifetime}, _elems{GLOBALS.emptyList()}, _last{GLOBALS.emptyList()} {
         }
 
         D_List* _elems;

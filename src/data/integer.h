@@ -13,6 +13,7 @@ namespace ufo {
         static D_Integer* create(int n, GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
+        TypeId getTypeId() override { return T_Integer; }
         void show(std::ostream& stream) override { stream << _n; }
 
         // unique methods
@@ -20,7 +21,7 @@ namespace ufo {
 
     protected:
         D_Integer(int n, GC::Lifetime lifetime)
-            : Any{T_Integer, lifetime}, _n{n} {
+            : Any{lifetime}, _n{n} {
         }
 
         int _n;

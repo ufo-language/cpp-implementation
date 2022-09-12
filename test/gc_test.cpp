@@ -20,7 +20,7 @@ namespace ufo {
         static int disposeCalled;
         int id;
         int markChildrenCalled = 0;
-        TestClass(GC::Lifetime lifetime=GC::GC_Transient) : Any{T_NULL, lifetime} {
+        TestClass(GC::Lifetime lifetime=GC::GC_Transient) : Any{lifetime} {
             id = nextId++;
         }
         ~TestClass() {

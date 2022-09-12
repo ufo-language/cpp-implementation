@@ -13,6 +13,7 @@ namespace ufo {
 
         // overridden methods
         Any* evaluate(Evaluator* etor) override;
+        TypeId getTypeId() override { return T_Task; }
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
 
@@ -20,7 +21,7 @@ namespace ufo {
 
     protected:
         D_Task(GC::Lifetime lifetime)
-            : Any{T_Task, lifetime} {
+            : Any{lifetime} {
         }
     };
 
