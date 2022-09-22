@@ -52,9 +52,9 @@ namespace ufo {
 
         // sanity check the permanent objects
         REQUIRE_NOTHROW(GLOBALS.emptyList()->getTypeId()); 
-        REQUIRE(GLOBALS.emptyList()->getTypeId() == T_List);
+        REQUIRE(GLOBALS.emptyList()->isA(T_List));
         REQUIRE_NOTHROW(GLOBALS.nil()->getTypeId());
-        REQUIRE(GLOBALS.nil()->getTypeId() == T_Nil);
+        REQUIRE(GLOBALS.nil()->isA(T_Nil));
 
         SECTION("GC::Unmanaged") {
             TestClass* obj1 = new TestClass(GC::GC_Unmanaged);
@@ -209,25 +209,25 @@ namespace ufo {
         SECTION("deleteAll permanent objects" ) {
             // sanity check the permanent objects
             REQUIRE_NOTHROW(GLOBALS.emptyList()->getTypeId()); 
-            REQUIRE(GLOBALS.emptyList()->getTypeId() == T_List);
+            REQUIRE(GLOBALS.emptyList()->isA(T_List));
             REQUIRE_NOTHROW(GLOBALS.nil()->getTypeId());
-            REQUIRE(GLOBALS.nil()->getTypeId() == T_Nil);
+            REQUIRE(GLOBALS.nil()->isA(T_Nil));
 
             REQUIRE_NOTHROW(THE_GC.deleteAll());
 
             // sanity check the permanent objects
             REQUIRE_NOTHROW(GLOBALS.emptyList()->getTypeId()); 
-            REQUIRE(GLOBALS.emptyList()->getTypeId() == T_List);
+            REQUIRE(GLOBALS.emptyList()->isA(T_List));
             REQUIRE_NOTHROW(GLOBALS.nil()->getTypeId());
-            REQUIRE(GLOBALS.nil()->getTypeId() == T_Nil);
+            REQUIRE(GLOBALS.nil()->isA(T_Nil));
 
             REQUIRE_NOTHROW(THE_GC.deleteAll());
 
             // sanity check the permanent objects
             REQUIRE_NOTHROW(GLOBALS.emptyList()->getTypeId()); 
-            REQUIRE(GLOBALS.emptyList()->getTypeId() == T_List);
+            REQUIRE(GLOBALS.emptyList()->isA(T_List));
             REQUIRE_NOTHROW(GLOBALS.nil()->getTypeId());
-            REQUIRE(GLOBALS.nil()->getTypeId() == T_Nil);
+            REQUIRE(GLOBALS.nil()->isA(T_Nil));
         }
 
         SECTION("deleteAll repeated call") {

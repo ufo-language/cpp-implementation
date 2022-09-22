@@ -1,7 +1,17 @@
 cmake_minimum_required (VERSION 3.10)
 project(ufo)
 
+#C_OPT_DEBUG="-O0 -g -ggdb"
+#C_OPT_SIZE="-static -Os -ffunction-sections -fdata-sections"
+#C_OPT_SPEED="-O2"
+
+#debug
 add_compile_options(-g -ggdb -Wall -Wextra -pedantic)
+
+#size
+#add_compile_options(-Os -Wall -Wextra -pedantic -ffunction-sections -fdata-sections)
+#add_link_options(-Wl,-gc-sections)
+
 set(CMAKE_CXX_STANDARD 11)
 
 file(GLOB SOURCE_FILES src/*/*.cpp)

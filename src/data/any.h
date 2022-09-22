@@ -21,17 +21,19 @@ namespace ufo {
 
         // virtual functions
         virtual void dispose() { delete this; }
-        virtual Any* evaluate(Evaluator* etor) { (void)etor; return this; }
+        virtual void eval(Evaluator* etor);
         virtual void markChildren(std::queue<Any*>& markedObjects) { (void)markedObjects; }
         virtual size_t size() { return sizeof(this); }
 
         // concrete functions
+        bool isA(TypeId typeId) { return getTypeId() == typeId; }
         bool isMarked() { return _isMarked; }
         Any* getNext() { return _next; }
         void setMarked(bool isMarked) { _isMarked = isMarked; }
         void setNext(Any* next) { _next = next; }
 
         // friend functions
+        friend Evaluator;
         friend std::ostream & operator<<(std::ostream &stream, Any* object);
 
     protected:

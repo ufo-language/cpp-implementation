@@ -1,4 +1,5 @@
 #include "data/any.h"
+#include "etor/evaluator.h"
 #include "memory/gc.h"
 #include "ufo/typeid.h"
 
@@ -11,6 +12,10 @@ namespace ufo {
     }
 
     Any::~Any() {
+    }
+
+    void Any::eval(Evaluator* etor) {
+        etor->pushObj(this);
     }
 
     std::ostream& operator << (std::ostream& stream, std::nullptr_t) {

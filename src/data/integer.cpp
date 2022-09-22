@@ -3,8 +3,8 @@
 
 namespace ufo {
 
-    D_Integer* D_Integer::create(int n, GC::Lifetime lifetime) {
-        return new D_Integer(n, lifetime);
+    D_Integer* D_Integer::create(int i, GC::Lifetime lifetime) {
+        return new D_Integer(i, lifetime);
     }
 
 }

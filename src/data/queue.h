@@ -1,6 +1,6 @@
 #pragma once
 
-#include <list>
+#include <initializer_list>
 #include <queue>
 
 #include "data/any.h"
@@ -15,10 +15,11 @@ namespace ufo {
     
     class D_Queue : public Any {
     public:
-        static D_Queue* create(const std::list<Any*>& elems={}, GC::Lifetime lifetime=GC::GC_Transient);
+        static D_Queue* create(GC::Lifetime lifetime=GC::GC_Transient);
+        static D_Queue* create(std::initializer_list<Any*>& elems, GC::Lifetime lifetime=GC::GC_Transient);
 
         // overridden methods
-        Any* evaluate(Evaluator* etor) override;
+        void eval(Evaluator* etor) override;
         TypeId getTypeId() override { return T_Queue; }
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;

@@ -11,16 +11,16 @@
 
 namespace ufo {
 
-    class D_EmptyList;
+    class E_Continuation;
     class Evaluator;
     
     class D_List : public Any {
     public:
         static D_List* create(Any* first, Any* rest, GC::Lifetime lifetime=GC::GC_Transient);
+        static D_List* create(std::initializer_list<Any*> elems, GC::Lifetime lifetime);
 
         // overridden methods
-        void dispose() override;
-        Any* evaluate(Evaluator* etor) override;
+        void eval(Evaluator* etor) override;
         TypeId getTypeId() override { return T_List; }
         void markChildren(std::queue<Any*>& markedObjects) override;
         void show(std::ostream& stream) override;
@@ -46,18 +46,22 @@ namespace ufo {
     public:
         bool isEmpty() override { return true; }
 
-        virtual Any* getFirst() {
+        Any* getFirst() override {
             throw UFOException("attempt to get 'first' field of empty list", this);
         }
-        virtual Any* getRest() {
+
+        Any* getRest() override {
             throw UFOException("attempt to get 'rest' field of empty list", this);
         }
+
         void markChildren(std::queue<Any*>& markedObjects) override { (void)markedObjects; }
-        virtual void setFirst(Any* first) {
+
+        void setFirst(Any* first) override {
             (void)first;
             throw UFOException("attempt to set 'first' field of empty list", this);
         }
-        virtual void setRest(Any* rest) {
+
+        void setRest(Any* rest) override {
             (void)rest;
             throw UFOException("attempt to set 'rest' field of empty list", this);
         }
